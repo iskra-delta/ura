@@ -1,0 +1,6 @@
+[submodule "lib/idp-udev"]
+	path = lib/idp-udev
+	url = https://github.com/iskra-delta/idp-udev.git
+[submodule "lib/libcpm3-z80"]
+	path = lib/libcpm3-z80
+	url = https://github.com/retro-vault/libcpm3-z80.git

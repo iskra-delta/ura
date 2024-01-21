@@ -1,0 +1,7 @@
+# Output and dev directories.
+build/
+bin/
+lab/
+
+# Visual Studio
+.vscode/
