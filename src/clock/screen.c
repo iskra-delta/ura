@@ -44,8 +44,11 @@ static point_t* _rotate(int angle, point_t* point) {
     float s=fastsin(angle);
     float c=fastcos(angle);
 
-    point->x = point->x * c - point->y * s;
-    point->y = point->x * s + point->y * c;
+    float newx = point->x * c - point->y * s;
+    float newy = point->x * s + point->y * c;
+
+    point->x = newx;
+    point->y = newy;
 
     return point;
 }
@@ -55,22 +58,25 @@ void scr_draw_pointer(
     int r,
     int d1, int d2, int h1, int h2) {
 
+    /* define points */
     point_t pts[]= {
-        {-d1,-h1},
-        {r+d2,-h1},
-        {r+d2,0},
-        {r,0},
-        {r,h2},
-        {-d1,h2},
-        {-d1,-h1}
+        {-h1,d1},
+        {-h1,-r-d2},
+        {0,-r-d2},
+        {0,-r},
+        {h2,-r},
+        {h2,d1},
+        {-h1,d1}
     };
 
+    /* rotate point 0 */
     _rotate(angle, &(pts[0]));
 
+    /* iterate points*/
     for(int i=1;i<sizeof(pts)/sizeof(point_t);i++) {
-
+        /* rotate next */
         _rotate(angle,&(pts[i]));
-        
+        /* and draw line of poly */
         gdrawline(
             SCREEN_CENTER_X + pts[i-1].x,
             SCREEN_CENTER_Y + pts[i-1].y,

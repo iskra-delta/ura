@@ -43,9 +43,8 @@ void clock_loop() {
         int minute=6 * bcd2bin(MINUTE);
         int hour=30 * bcd2bin(HOUR) + bcd2bin(MINUTE) / 2;
 
-        /*test*/
-        // scr_draw_pointer(hour, 70, 20, 50, 10, 20);
-        scr_draw_pointer(minute, 120, 20, 50, 8, 15);
+        scr_draw_pointer(hour, 140, 20, 20, 4, 12);
+        scr_draw_pointer(minute, 160, 20, 50, 4, 10);
     }
 
 }
