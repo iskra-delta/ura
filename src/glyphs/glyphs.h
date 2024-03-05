@@ -13,5 +13,6 @@ extern void g09;
 extern void g10;
 extern void g11;
 extern void g12;
+extern void iskra;
 
 #endif /* __GLYPHS_H__ */

@@ -5,6 +5,7 @@
 
 #include <glyphs/glyphs.h>
 #include <glyphs/sprite.h>
+#include <glyphs/poly.h>
 #include <clock/screen.h>
 #include <clock/trig.h>
 
@@ -38,6 +39,15 @@ void scr_draw_num(int gpynum, int radius) {
         CO_FORE);
 }
 
+void scr_draw_logo() {
+    /* and draw it */
+    gputsprite(
+        &iskra, 
+        586, 
+        270, 
+        CO_FORE);
+}
+
 static point_t* _rotate(int angle, point_t* point) {
     
     /* cache */
@@ -65,23 +75,17 @@ void scr_draw_pointer(
         {0,-r-d2},
         {0,-r},
         {h2,-r},
-        {h2,d1},
-        {-h1,d1}
+        {h2,d1}
     };
 
-    /* rotate point 0 */
-    _rotate(angle, &(pts[0]));
-
     /* iterate points*/
-    for(int i=1;i<sizeof(pts)/sizeof(point_t);i++) {
+    for(int i=0;i<sizeof(pts)/sizeof(point_t);i++) {
         /* rotate next */
         _rotate(angle,&(pts[i]));
-        /* and draw line of poly */
-        gdrawline(
-            SCREEN_CENTER_X + pts[i-1].x,
-            SCREEN_CENTER_Y + pts[i-1].y,
-            SCREEN_CENTER_X + pts[i].x,
-            SCREEN_CENTER_Y + pts[i].y);
+        pts[i].x=pts[i].x+SCREEN_CENTER_X;
+        pts[i].y=pts[i].y+SCREEN_CENTER_Y;    
     }
 
+    /* draw polygon */
+    gpx_fill_polygon(pts, sizeof(pts)/sizeof(point_t), CO_FORE); 
 }

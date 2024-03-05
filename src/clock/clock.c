@@ -22,7 +22,9 @@ void clock_init() {
     /* now draw all the sprites */
     for (int i=1;i<=12;i++)
         scr_draw_num(i,200);
-    
+    /* and the logo */
+    scr_draw_logo();
+
 }
 
 void clock_exit() {
@@ -46,5 +48,7 @@ void clock_loop() {
         scr_draw_pointer(hour, 140, 20, 20, 4, 12);
         scr_draw_pointer(minute, 160, 20, 50, 4, 10);
     }
+
+    scr_clear();
 
 }
