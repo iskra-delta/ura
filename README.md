@@ -1,7 +1,3 @@
-# ura
-
-The Iskra clock for the Iskra Delta Partner computer.
-
 ![status.badge] [![language.badge]][language.url] [![standard.badge]][standard.url] [![license.badge]][license.url]
 
 # ura
