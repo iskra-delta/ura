@@ -7,6 +7,7 @@
 
 #include <glyphs/glyphs.h>
 #include <glyphs/sprite.h>
+#include <glyphs/poly.h>
 
 #include <clock/bcd.h>
 #include <clock/screen.h>

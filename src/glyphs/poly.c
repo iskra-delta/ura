@@ -280,6 +280,7 @@ void gpx_draw_polygon(
 {
     if (n < 2)
         return; /* no polygon */
+    gsetcolor(c);
     /* draw lines */
     for (int i = 1; i < n; i++)
     {

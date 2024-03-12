@@ -5,6 +5,8 @@
 
 #include <ugpx.h>
 
+#include <glyphs/poly.h>
+
 #define RADIUS 200
 
 /* game context (state) */
