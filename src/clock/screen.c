@@ -63,10 +63,13 @@ static point_t* _rotate(int angle, point_t* point) {
     return point;
 }
 
-void scr_draw_pointer(
+/* draw with 
+   gpx_fill_polygon(pts, sizeof(pts)/sizeof(point_t), CO_FORE); */
+void scr_calc_hands(
     int angle,
     int r,
-    int d1, int d2, int h1, int h2) {
+    int d1, int d2, int h1, int h2,
+    point_t *rpts) {
 
     /* define points */
     point_t pts[]= {
@@ -82,10 +85,7 @@ void scr_draw_pointer(
     for(int i=0;i<sizeof(pts)/sizeof(point_t);i++) {
         /* rotate next */
         _rotate(angle,&(pts[i]));
-        pts[i].x=pts[i].x+SCREEN_CENTER_X;
-        pts[i].y=pts[i].y+SCREEN_CENTER_Y;    
+        rpts[i].x=pts[i].x+SCREEN_CENTER_X;
+        rpts[i].y=pts[i].y+SCREEN_CENTER_Y;    
     }
-
-    /* draw polygon */
-    gpx_fill_polygon(pts, sizeof(pts)/sizeof(point_t), CO_FORE); 
 }

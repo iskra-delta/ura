@@ -12,6 +12,12 @@ typedef struct point_s {
     coord y;
 } point_t;
 
+typedef struct horz_line_s {
+    coord x0;
+    coord x1;
+    coord y;
+} horz_line_t;
+
 extern void gpx_fill_polygon(
     point_t *pts, int n,
     color c);

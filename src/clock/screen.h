@@ -15,10 +15,11 @@
 
 extern void scr_clear();
 extern void scr_draw_num(int gpynum, int radius);
-extern void scr_draw_pointer(
+extern void scr_calc_hands(
     int angle,
     int radius,
-    int d1, int d2, int h1, int h2);
+    int d1, int d2, int h1, int h2,
+    point_t *hpts);
 extern void scr_draw_logo();
 
 #endif /* __SCREEN_H__ */

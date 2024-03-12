@@ -38,39 +38,49 @@ static _bresenham_t* _bresenham_init(
 static bool _bresenham_next(
     _bresenham_t *br_data,
     int scany,
-    point_t *point) {
+    horz_line_t *hline) {
+
+    coord tmp;
 
     /* no intersection with the scanline */
     if (scany < br_data->y0 || scany > br_data->y1)
         return false;
 
-    /* remember y */
-    point->y=br_data->y0, point->x=br_data->x0;
+    /* remember y and starting position */
+    hline->y=br_data->y0, hline->x0=hline->x1=br_data->x0;
     int e2;
 
-    while (br_data->y0 == point->y) {  /* loop until y changes or end */
+    while (br_data->y0 == hline->y) {  /* loop until y changes or end */
         /* are we at the last point? */
         if (br_data->x0 == br_data->x1 
             && br_data->y0 == br_data->y1) {
-            if (br_data->sx>0) /* if sx < 0 it's the first point*/
-                point->x = br_data->x0; 
+            if (br_data->sx > 0) { /* if sx < 0 it's the first point*/
+                tmp=hline->x1;
+                hline->x1=hline->x0;
+                hline->x0=tmp;
+            }
             br_data->state=BR_ST_LAST_PX;  /* end of line */
             goto br_exit;
         }
 
         e2 = br_data->err;
-        if (e2 > -br_data->dx) {
-            br_data->err -= br_data->dy;
-            br_data->x0 += br_data->sx;
-        }
         if (e2 < br_data->dy) {
             br_data->err += br_data->dx;
             br_data->y0 += br_data->sy;
         }
+        if (e2 > -br_data->dx) {
+            br_data->err -= br_data->dy;
+            br_data->x0 += br_data->sx;
+            if (br_data->y0 == hline->y)
+                hline->x1=br_data->x0;
+        }
     }
 
-    if (br_data->sx>0) /* if sx < 0 it's the first point*/
-        point->x = br_data->x0; 
+    if (br_data->sx > 0) { /* if sx < 0 it's the first point*/
+        tmp=hline->x1;
+        hline->x1=hline->x0;
+        hline->x0=tmp; 
+    }
 
     /* it's not over yet... */
     if (br_data->state==BR_ST_INIT)
@@ -81,6 +91,7 @@ static bool _bresenham_next(
 br_exit:
     return true;
 }
+
 
 /* allocation table is a table of this type */
 #define ATBL_TYPE   int8_t
@@ -138,9 +149,7 @@ static int8_t _atbl_delete(
 }
 
 /* max. number of points in polygon */
-void gpx_fill_polygon(
-    point_t *pts, int n,
-    color c) {
+void gpx_fill_polygon(point_t *pts, int n, color c) {
 
     if (n < 3)
         return; /* no polygon */
@@ -201,7 +210,7 @@ void gpx_fill_polygon(
     /* start scan line algorithm from top point */
     int y = pts[iyfirst].y;
     _bresenham_t* ae[2]; /* active edges */
-    point_t ept[2];
+    horz_line_t ehl[2];
     int8_t aelast;
 
     do {
@@ -216,23 +225,31 @@ void gpx_fill_polygon(
             _bresenham_t* e= edges[ixedge];
 
             /* if active edge, add to edges */
-            if (_bresenham_next(e,y,&(ept[aelast]))) 
+            if (_bresenham_next(e,y,&(ehl[aelast]))) 
                 ae[aelast++]=e;
 
             /* do we have two edges? */
             if (aelast==2) {
 
                 /* and draw a line */
-                gdrawline( 
-                    ept[0].x, y, 
-                    ept[1].x, y);
+                gsetcolor(c);
+                gdrawline(
+                    ehl[0].x0, y, 
+                    ehl[1].x0, y
+                );
 
                 /* special case if maximum or minimum,
                    count it twice */
                 if (ae[0]->state!=ae[1]->state
-                    && ae[0]->x0==ae[1]->x0) {
+                    && (
+                        ehl[0].x0==ehl[1].x0
+                        || ehl[0].x1==ehl[1].x1
+                        || ehl[0].x0==ehl[1].x1
+                        || ehl[0].x1==ehl[1].x0
+                    )
+                ) {
                     ae[0]=ae[1];
-                    ept[0]=ept[1];
+                    ehl[0]=ehl[1];
                     aelast=1;
                 }
                 else
@@ -255,6 +272,7 @@ void gpx_fill_polygon(
     for(i=0;i<edges_count;i++) free(edges[i]);
     free(edges);
 }
+
 
 void gpx_draw_polygon(
     point_t pts[], int n,
